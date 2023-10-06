@@ -1,0 +1,23 @@
+== Socket Type
+
+=== Datagram Sockets
+* UDP (User Datagram Protocol)를 사용하는 무연결 socket
+* Datagram socket에서 보내거나 받은 packet은 개별 주소가 지정되고 라우팅 됨.
+* 순서와 신뢰성이 보장되지 않음 -> 임의의 순서로 도착하거나 도착하지 않을 수 있음.
+
+
+=== Stream Sockets
+* Connection-oriented Sockets
+* TCP (Transmission Control Protocol)
+* SCTP (Stream Control Transmission Protocol)
+* DCCP (Datagram Congestion Control Protocol)
+* 오류 없는 데이터 전송, packet 순서, 흐름 제어 보장
+* 인터넷 -> 일반적으로 TCP사용하여 구현됨.
+* 응용 프로그램이 TCP/IP 프로토콜을 사용하여 네트워크를 통해 실행될 수 있음
+* 송신된 순서에 따라 중복되지 않게 데이터 수신 -> overhead 발생
+
+
+=== Raw Sockets
+* 프로토콜별 전송 계층(TCP, UDP ...) 형식 없이 IP Packet을 직접 보내고 받을 수 있음
+* 일반적으로 네트워크 장비에서 사용할 수 있으며 IGMP와 OSPF와 같은 라우팅 프로토콜에 사용
+* ICMP(Internet Control Message Protocol)에도 사용
