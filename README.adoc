@@ -1,0 +1,5 @@
+= Team 3 - Network(Socker) Study
+
+== 📚
+주교재 : https://github.com/nhnacademy-bootcamp/java-network-programming[NHN Academy github] +
+부교재 : https://nhnacademy.dooray.com/share/pages/ppBBQ8w3T0islGL-gLrYRA/3483008162160137545[NHN Dooray]
