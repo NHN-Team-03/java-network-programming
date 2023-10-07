@@ -1,0 +1,23 @@
+== Java Socket 통신
+
+=== Java Socket
+* Socket Class
+* ServerSocket Class
+
+위의 두 클래스 지원
+
+image:images/java_socket.png[Java Socket]
+
+=== Class Socket
+
+```java
+Socket socket = new Socket(hostIp, port);
+```
+
+
+=== Echo server
+* client가 server에 연결하여 message를 보내면, 그대로 반환
+image:images/echo_server.png[echo server]
+
+=== 비동기 통신
+*
