@@ -1,0 +1,63 @@
+= Computer Network
+* 서로 데이터를 교환하고 자원을 공유할 수 있는 Computing device의 집합
+* Protocol을 사용하여 통신 (다양한 형태의 Protocol)
+
+== Node
+* Message 전달을 위해 중간 연결 역할을 수행하는 device
+
+=== Node 종류
+* Network Interface
+* Repeater and Hub
+* Bridge
+* Switch
+* Router
+* Modem
+* Firewall
+
+
+==== Network Interface
+* Network 간의 상호 연결 지점
+
+* 일반적으로 NIC(Network Interface Controller)와 같은 물리적인 디바이스를 이야기 한다.
+** Network Interface Controller : Network에 연결될 수 있도록 지원하는 하드웨어 장치
+
+* Loopback Interface와 같이 가상 디바이스로도 구현이 가능
+
+==== Reapeater
+* 장거리 전송 -> 신호 품질 저하를 줄임
+** 신호 증폭: 장거리 전송에 따른 신호 감소 문제 해결
+** 신호 처리: 외부로부터 유입된 노이즈 제거
+
+* 전송 거리나 환경 요인을 극복하기 위해 물리적 전송 매체를 변경할 수 있음.
+** 장거리 대용량 데이터 전송 -> 광 케이블 사용
+** 육지와 섬 통신 -> 무선 통신 사용
+
+==== Hub
+* Repeater와 동일하게 통신 거리 연장에 이용
+* Repeater와 달리 여러 개의 포트를 가지고 있음
+* Repeater는 1:1 통신 사이에 들어가지만, Hub는 1:N 통신 사이에 들어감
+
+==== Bridge
+* OSI model - Data Link Layer
+* 두 네트워크 세그먼트를 연결하여 하나의 네트워크처럼 동작하도록 지원 -> 세그먼트 충돌 방지
+
+==== Switch
+* OSI model - Data Link Layer
+* 둘 이상의 네트워크 세그먼트를 연결하여 하나의 네트워크처럼 동작하도록 지원
+* N개의 네트워크 세그먼트가 충돌을 방지할 수 있음.
+
+==== Router
+* OSI model - Network Layer
+* 네트워크간 패킷 전달에 이용됨
+* Routing 정보를 이용하여 경로를 정할 수 있음.
+
+==== Modem
+* OSI model - Physical Layer
+* Modulator-Demodulator에서 나온 단어
+* 디지털 데이터 <--> 아날로그 데이터
+
+==== Firewall
+* 네트워크 보안 및 접근 규칙을 제어하기 위한 장치 또는 소프트웨어
+* 안전한 내부 네트워크와 인터넷과 같이 잠재적으로 안전하지 않은 외부 네트워크 사이에 연결에 삽입
+* 사전에 설정되지 않은 접근에 대해서 차단을 기본으로 함.
+
