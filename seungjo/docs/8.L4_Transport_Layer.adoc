@@ -13,7 +13,9 @@
 == UDP
 * checksum 정도만 제공 -> 패킷이 손상되었는지만 체크
 * 별 다른 기능이 없어 TCP에 비해 빠를 가능성이 있음
-```
+
+[source]
+----
 Format
 
 
@@ -30,13 +32,14 @@ Format
                  +---------------- ...
 
                       User Datagram Header Format
-```
+----
 
 
 == TCP
 * 도착 순서 보장
 
-```
+[source]
+----
   TCP Header Format
 
 
@@ -63,7 +66,7 @@ Format
                             TCP Header Format
 
           Note that one tick mark represents one bit position.
-```
+----
 
 === 3-way handshake
 * 연결 지향적인 방식
