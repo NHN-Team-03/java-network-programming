@@ -4,83 +4,106 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Server extends Thread {
+public class Server {
+    static Map<String, Socket> chatter = new HashMap<>();
 
-    static List<Client> clientList = new LinkedList<>();
-    static List<ChatHandler> handlerList = new LinkedList<>();
-
-
-    // 각각의 ChatHandler는 하나의 Client와 연결되어 있다.
     static class ChatHandler extends Thread {
-        private Socket socket;
+
+        String id;
+        Socket socket;
         BufferedReader reader;
+        BufferedWriter writer;
 
         public ChatHandler(Socket socket) throws IOException {
-            handlerList.add(this);
             this.socket = socket;
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        }
+
+        public void send(String line) {
+            String[] info = line.substring(1).split(" ", 2);
+            String name = info[0];
+            String message = info[1];
+
+            try {
+                Socket findSocket = chatter.get(name);
+                OutputStream outputStream = findSocket.getOutputStream();
+                outputStream.write(("-> " + this.id + " : " + message).getBytes());
+                outputStream.flush();
+
+            } catch (IOException ignore) {
+            }
+        }
+
+        public void sendAll(String line) {
+            try {
+                for (String key : chatter.keySet()) {
+                    OutputStream outputStream = chatter.get(key).getOutputStream();
+                    outputStream.write((this.id + " : " + line).getBytes());
+                    outputStream.flush();
+                }
+            } catch (IOException ignore) {
+            }
+        }
+
+        private void printClients() throws IOException {
+            for (String id : chatter.keySet()) {
+                writer.write(id);
+                writer.newLine();
+            }
+            writer.flush();
         }
 
         @Override
         public void run() {
-            System.out.println(
-                    "Client connected: " + " [" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort() +
-                            "]");
+
+            try {
+                this.id = reader.readLine();
+                chatter.put(id, this.socket);
+                System.out.println(id + " connected");
+            } catch (IOException ignore) {
+            }
+
 
             while (!Thread.currentThread().isInterrupted()) {
-                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
-
+                try {
                     String line;
 
                     while ((line = reader.readLine()) != null) {
-                        if (line.charAt(0) == '@') {
-                            String[] str = line.split(" ", 2);
-                            String id = str[0].substring(1);
-                            String message = str[1];
-
-                            System.out.println(id + " " + message);
-
-                            for (Client client : clientList) {
-                                if (client.getName().equals(id)) {
-                                    client.write(client.getName() + " : " + message);
-                                }
-                            }
+                        line = line.concat("\n");
+                        if (line.startsWith("!")) {
+                            printClients();
+                        } else if (line.startsWith("@")) {
+                            send(line);
                         } else {
-                            for (Client client : clientList) {
-                                client.write(line);
-                            }
+                            sendAll(line);
                         }
                     }
-                } catch (IOException ignore) {
+
+
+                } catch (IOException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
         }
     }
 
-    private int port;
-
-    public Server(int port) {
-        this.port = port;
-    }
-
-    @Override
-    public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-
-            while (!Thread.currentThread().isInterrupted()) {
-                Socket socket = serverSocket.accept();
-                ChatHandler handler = new ChatHandler(socket);
-                handler.start();
-            }
-        } catch (IOException ignore) {
+    public static void close(String id) {
+        try {
+            Socket remove = chatter.remove(id);
+            remove.close();
+        } catch (IOException e) {
+            Thread.currentThread().interrupt();
         }
     }
+
 
     public static void main(String[] args) {
         int port = 1234;
@@ -89,13 +112,20 @@ public class Server extends Thread {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException ignore) {
+                System.out.println("Port: 1 ~ 65535");
                 System.exit(1);
             }
         }
 
-        Server server = new Server(port);
-        server.start();
-        System.out.println("Server started on port " + port);
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            while (!Thread.currentThread().isInterrupted()) {
+                Socket socket = serverSocket.accept();
+                ChatHandler handler = new ChatHandler(socket);
 
+                handler.start();
+            }
+        } catch (IOException ignore) {
+        }
     }
 }
+

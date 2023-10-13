@@ -1,59 +1,77 @@
 package quiz.quiz13;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
 
-public class Client extends Thread {
+public class Client {
 
-    static List<Client> clientList = new LinkedList<>();
     private Socket socket;
-    private BufferedWriter writer;
+    private BufferedOutputStream socketOut;
+    private String id;
 
-    public Client(String id, Socket socket) throws IOException {
-        super(id);
+    private Thread sendThread;
+    private Thread receiveThread;
+
+    public Client(Socket socket, String id) throws IOException {
         this.socket = socket;
-        this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-    }
+        this.id = id;
+        socketOut = new BufferedOutputStream(socket.getOutputStream());
 
-    @Override
-    public void run() {
-        clientList.add(this);
-        for (Client client : clientList) {
-            System.out.println(client.getName());
-        }
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-            String message;
-            while ((message = reader.readLine()) != null) {
-                if (message.equals("!exit")) {
-                    break;
+        sendId();
+
+        this.sendThread = new Thread(() -> {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.equals("!exit")) {
+                        //TODO: 서버에서 이 클라이언트 지워야 됨
+                        Server.close(id);
+                        System.exit(0);
+                    }
+                    writer.write(line);
+                    writer.newLine();
+                    writer.flush();
                 }
-                write(message);
+            } catch (IOException ignore) {
             }
-        } catch (IOException ignore) {
-        }
+        });
 
+        this.receiveThread = new Thread(() -> {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (IOException ignore) {
+            }
+        });
+
+
+    }
+
+    private void sendId() {
         try {
-            socket.close();
-            Server.clientList.remove(this);
+            socketOut.write((this.id).concat("\n").getBytes());
+            socketOut.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    public void write(String message) throws IOException {
-        writer.write(message);
-        writer.newLine();
-        writer.flush();
+    public void start() {
+        sendThread.start();
+        receiveThread.start();
     }
+
 
     public static void main(String[] args) {
-        String id = "user" + clientList.size();
+        String id = "Team";
         String host = "localhost";
         int port = 1234;
 
@@ -65,22 +83,20 @@ public class Client extends Thread {
             host = args[1];
         }
 
-        if (args.length > 2) {
-            try {
+        try {
+            if (args.length > 2) {
                 port = Integer.parseInt(args[2]);
-            } catch (NumberFormatException ignore) {
-                System.out.println("Port: 1 ~ 65535 Integer");
-                System.exit(1);
             }
+        } catch (NumberFormatException e) {
+            System.err.println("src.Client: Port 번호 잘못 됨");
         }
 
-        try (Socket socket = new Socket(host, port)) {
-
-            System.out.println("Conneted to server: " + host + ":" + port);
-            Client client = new Client(id, socket);
-
+        try {
+            Socket socket = new Socket(host, port);
+            Client client = new Client(socket, id);
             client.start();
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
