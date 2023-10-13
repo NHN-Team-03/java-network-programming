@@ -1,0 +1,98 @@
+= Transport Layer
+
+1. TCP (Transmission Control Protocol)
+* 높은 오버헤드 프로토콜
+* 손실된 데이터나 손상된 데이터의 재전송 및 전송된 바이트 순서대로 전달
+* 신뢰성있는 프로토콜
+
+2. UDP (User Datagram protocol)
+* 수신자는 손상된 패킷을 감지할 수 있지만 패킷이 올바른 순서로 전달되는 것을 보장하지 않음.
+* 신뢰성없는 프로토콜
+
+
+== UDP
+* checksum 정도만 제공 -> 패킷이 손상되었는지만 체크
+* 별 다른 기능이 없어 TCP에 비해 빠를 가능성이 있음
+
+[source]
+----
+Format
+
+
+                  0      7 8     15 16    23 24    31
+                 +--------+--------+--------+--------+
+                 |     Source      |   Destination   |
+                 |      Port       |      Port       |
+                 +--------+--------+--------+--------+
+                 |                 |                 |
+                 |     Length      |    Checksum     |
+                 +--------+--------+--------+--------+
+                 |
+                 |          data octets ...
+                 +---------------- ...
+
+                      User Datagram Header Format
+----
+
+
+== TCP
+* 도착 순서 보장
+
+[source]
+----
+  TCP Header Format
+
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |          Source Port          |       Destination Port        |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                        Sequence Number                        |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                    Acknowledgment Number                      |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |  Data |           |U|A|P|R|S|F|                               |
+   | Offset| Reserved  |R|C|S|S|Y|I|            Window             |
+   |       |           |G|K|H|T|N|N|                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Checksum            |         Urgent Pointer        |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                    Options                    |    Padding    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                             data                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                            TCP Header Format
+
+          Note that one tick mark represents one bit position.
+----
+
+=== 3-way handshake
+* 연결 지향적인 방식
+* 데이터 전달을 보증 (SYN -> ACK 과정을 통해서)
+* 순서 보장 (패킷의 순서가 잘못된 경우 다시 보내라고 요청)
+
+`신뢰할 수 있는 프로토콜로 대부분 TCP를 사용하는 이유`
+
+image:https://user-images.githubusercontent.com/84575041/226154521-ce956047-aef5-480c-98be-f541d156bc43.png[TCP 3-way handshake]
+
+=== 4-way handshake
+
+image:images/connect_close.png[TCP 커넥션 끊기]
+
+* TCP Connection 끊을 때는 4-way handshake 방식을 사용
+
+
+== Well-Known Port
+* 자주 사용하는 프로토콜에 고정 포트번호를 부여
+* HTTP : 80
+** `http://www.naver.com` = `http://www.naver.com:80`
+
+* DNS : 53
+* SMTP : 25
+* link:https://ko.wikipedia.org/wiki/TCP/UDP%EC%9D%98_%ED%8F%AC%ED%8A%B8_%EB%AA%A9%EB%A1%9D[Well Known Port Number List]
+
+
+
+
