@@ -1,0 +1,7 @@
+= Middle Test Review
+
+.Simulation
+* MonteCarlo Simulation
+* Continuous Simulation
+* Event Driven Simulation
+* OOP는 Simulation 코드들을 작성하다가 나온 패러다임
