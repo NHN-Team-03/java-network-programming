@@ -709,3 +709,272 @@ BGP - Border Gateway Protocol
 === BGP Border Gateway Protocol
 AS 간 라우팅에 사용하는 알고리즘이다. +
 AS 는 AS Number를 부여 받는다.
+
+== L2 Data Link Layer
+
+* 공유하는 전송 미디어에 데이터를 여러명이 동시에 보내면 안된다. 노이즈 없이 보내야 한다.
+
+MAC Media Access Control::
+충돌이 나지 않게 관리한다.
+* 종류
+** channel partitioning
+*** TDMA : Time Division Multiple Access - 시간을 나눠서 해결한다.
+*** FDMA : Frequency Division Multiple Access - 주파수를 나눠서 해결한다.
+** Random Access
+*** 보낸 후 충돌이 발생하면 랜덤한 시간동안 기다렸다가 다시 시도한다.
+*** CSMA : Carrier Sence Multiple Access
+*** CSMA/CD : Carrier Sence Multiple Access / Collision Detection
+*** Ethernet
+*** CSMA/CA : Carrier Sence Multiple Access / Collision Avoidance
+*** WIFI
+** Taking turns
+*** 중재자를 두는 케이스
+*** 토큰을 돌려가며 사용하는 케이스
+
+CSMA/CD::
+1. Carrier Sence : 누가 이야기를 하는지 들어보다가 아무도 이야기를 하지 않는다면
+2. 데이터를 보낸다. 보내는동안 다른 데이터가 나에게 도착한다면 충돌이 발생했다고 판단.
+3. Collision Detection : 충돌이 감지되면 데이터를 보내는것을 끊고, 랜덤한 시간동안 쉬었다가 재전송한다.
+* 랜덤하게 쉬는 방법
+** binary exponential backoff
+** 충돌 횟수가 m이라면 0 ~ 2^m-1 숫자 숭중에 랜덤하게 쉰다.
+
+{empty}
+
+Ethernet Frame::
+image:images/ethernet.jpeg[]
+* Destination MAC Address - 6byte (목적지 MAC 주소)
+* Source MAC Address - 6byte (출발지 MAC 주소)
+* EtherType
+* 데이터의 프로토콜 명시 대부분은 IP이다.
+
+다음 홉의 MAC 주소는 포워딩 테이블을 보고 다음 홉을 판단한다.
+
+
+=== ARP
+* Address Resolution Protocol
+
+ARP 테이블::
+
+{empty}
+
+[cols="2,3,1"]
+|===
+^s| IP 주소
+^s| MAC 주소
+^s| TTL
+
+| 233.1.1.1
+| 00:00:5e:00:01:06
+| 1
+|===
+
+* ARP 테이블을 만드는 프로토콜
+* Ethernet Frame 목적지 주소를 '브로드 캐스팅'으로 요청한다.
+
+=== LAN
+라우터를 거치지 않고 접근 가능한 영역
+
+=== Ethernet
+* Bus 형 +
+전체가 Collision domain 이다.
+* Star 형 +
+스위치가 collision 도메인을 분리해준다.
+
+== HTTP
+웹의 자원 위치에 접근하는 프로토콜.
+
+Hyper Text::
+Link를 통해서 한 문서에서 다른 문서로 즉시 접근할 수 있는 텍스트이다.
+
+WWW::
+* World Wide Web
+* Web 브라우저가 Web Server의 HTML로 기술된 리소스를 URL을 통해서 요청하여 HTTP를 사용하여 받아서 표현.
+
+{empty}
+
+HTML::
+* Hyper Text Markup Language
+[source, HTML]
+----
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome, NHN Academy</title>
+    </head>
+    <body>
+        <h3> Welcome </h3>
+        <p> Hello, NHN Academy. </p>
+        <p>
+            <a href="http://nhnacademy.com">
+                <img src="logo.png" />
+            </a>
+        </p>
+    </body>
+</html>
+----
+
+{empty}
+
+URL::
+* Uniform Resource Locator
+* 통일된 웹 리소스의 위치 지정 방법
+
+[source, URL]
+----
+<scheme>://[<username>:<password>@]<host>[:<port>]<Request-URI>[?<query>#<fragment>]
+----
+
+=== Protocol 구조
+요청::
+
+[source, console]
+----
+<Method> <Request URI> <Version>
+<Header>
+
+<Body>
+
+GET /welcome.html HTTP/1.1
+Host: test-vm.com:3000
+Connection: keep-alive
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+DNT: 1
+Accept-Encoding: gzip, deflate, sdch, br
+Accept-Language: ko
+If-Modified-Since: Sat, 15 Jan 2022 18:23:48 GMT
+----
+
+응답::
+
+[source, console]
+----
+<Version> <Status Code> <Reason Phrase>
+<Header>
+
+<Body>
+
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/2.7.13
+Date: Sat, 15 Jan 2022 19:09:33 GMT
+Content-type: text/html
+Content-Length: 358
+Last-Modified: Sat, 15 Jan 2022 18:23:48 GMT
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome, NHN Academy</title>
+    </head>
+    <body>
+        <h3> Welcome </h3>
+        <p> Hello, NHN Academy. </p>
+        <p>
+            <a href="http://nhnacademy.com">
+                <img src="logo.png" />
+            </a>
+        </p>
+    </body>
+</html>
+----
+
+* status code
+** 1xx : 정보제공
+** 2xx : 성공
+** 3xx : 리다이렉션
+** 4xx : 클라이언트의 오류
+** 5xx : 서버의 오류
+* reason phrase(거절 사유)
+** 200 OK
+** 401 Unathorized
+** 404 Not Found
+
+=== GET VS POST
+GET::
+리소스를 요청하기 위한 메서드
+
+[source, HTML]
+----
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome, NHN Academy</title>
+    </head>
+    <body>
+        <h3> Welcome </h3>
+        <form action="./welcome.html" method=GET >
+          name: <br/>
+          <input type="text"     name="name"   > <br/>
+          content: <br/>
+          <input type="textarea" name="content"> <br/>
+          <input type="submit"   name="send" value="send">
+        </form>
+    </body>
+</html>
+----
+
+POST::
+서버에 입력 데이터를 전송하기 위한 메서드
+[source, HTML]
+----
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome, NHN Academy</title>
+    </head>
+    <body>
+        <h3> Welcome </h3>
+        <form action="./welcome.html" method=POST>
+          name: <br/>
+          <input type="text"     name="name"   ><br/>
+          content: <br/>
+          <input type="textarea" name="content"><br/>
+          <input type="submit"   name="send" value="send">
+        </form>
+    </body>
+</html>
+----
+
+차이점::
+[cols="1,2,2"]
+|===
+^s|
+^s| GET
+^s| POST
+
+| 요청 주소
+| `/welcome.html?name=TEST-NAME&contenmt=TEST-CONTENT&send=send`
+| `welcome.html`
+
+| 헤더
+| `Content Type`, `Content Length` 헤더 없음
+| `Content Type: application/x-www-form-urlencoded`, `Content Length: 45`
+|===
+
+GET은 전송 데이터의 길이에 제한이 있다.
+
+=== 인증, 쿠키, 세션
+Stateless::
+Server-Client 관계에서 server가 client의 상태를 보존하지 않음.
+
+Cookie::
+서버가 클라이언트에게 쿠키를 세팅 요청(`Set-Cookie`)하면 클라이언트는 서버에게 보내는 요청 헤더에 (`Cookie: `)를 표시해서 전송
+* Session Cookie (세션 쿠키)
+** 사용자가 브라우저를 사용하는 동안만 유효하다.
+** 브라우저는 사용자가 브라우저를 사용하는 동안 Cookie 정보를 서버로 전달한다.
+* Persistene Cookie (지속 쿠키)
+** 사용자가 브라우저를 종료해도 유지되는 쿠키
+
+
+Set Cookie?::
+* 사용 세션 관리
+* 개인화
+* 사용자 추적
+
+Session::
+* 사용자 접속 시점에 임의의 세션 ID를 발급한다.
+* 해당 세션 ID를 키로 하여 서버 저장소에 필요한 정보를 저장한다.
+
