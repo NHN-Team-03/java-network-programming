@@ -1,4 +1,4 @@
-package quiz.quiz12;
+package com.nhnacadmemy.quiz.quiz12;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

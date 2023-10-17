@@ -1,4 +1,4 @@
-package quiz;
+package com.nhnacadmemy.quiz;
 
 import java.io.IOException;
 import java.net.ConnectException;

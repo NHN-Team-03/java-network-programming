@@ -1,4 +1,4 @@
-package quiz;
+package com.nhnacadmemy.quiz;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,34 +9,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringTokenizer;
 
-public class Quiz13_1 {
+public class Quiz13 {
 
     static List<Client> clientList = new LinkedList<>();
 
     static class Client extends Thread {
 
-        private ServerSocket serverSocket;
-
         private Socket socket;
         private BufferedWriter writer;
-        private BufferedReader reader;
 
-        static int clientCount = 0;
+        public Client(String id, Socket socket) {
+            super(id);
 
-        /**
-         * 별도의 지정이 없는 경우,
-         * id는 임의의 문자열로 생성한다.
-         * host는 localhost
-         * port는 1234로 한다.
-         */
-        public Client(ServerSocket serverSocket) throws IOException {
-
-            String id = "user" + (++clientCount);
-            String host = "localhost";
-            int port = 1234;
-
-            this.socket = new Socket(host, port);
+            this.socket = socket;
             clientList.add(this);
         }
 
@@ -58,7 +45,7 @@ public class Quiz13_1 {
 
                     if (line.charAt(0) == '@') {
                         String[] str = line.split(" ", 2);
-                        String id = str[0].substring(1, str[0].length());
+                        String id = str[0].substring(1);
                         String message = str[1];
 
                         for (Client client : clientList) {
@@ -110,10 +97,9 @@ public class Quiz13_1 {
                         System.out.print(client.getName() + " ");
                     }
                 }
-
                 Socket socket = serverSocket.accept();
 
-                quiz.Quiz13.Client client = new quiz.Quiz13.Client(("user" + count++), socket);
+                Client client = new Client(("user" + count++), socket);
                 System.out.println(client.getName() + "이 들어왔습니다.");
                 client.start();
             }
@@ -121,4 +107,3 @@ public class Quiz13_1 {
         }
     }
 }
-

@@ -1,4 +1,4 @@
-package tictactoe;
+package com.nhnacadmemy.tictactoe;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -131,11 +131,13 @@ public class Server {
         public void run() {
             try {
                 while (!gameOver()) {
+
                     int currentPlayerIndex = gameCount % 2;
-                    int otherPlayerIndex = gameCount + 1 % 2;
+                    int otherPlayerIndex = (currentPlayerIndex + 1) % 2;
 
                     printBoard();
                     sendMessage(currentPlayerIndex, "좌표(1 ~ 9)를 입력하세요");
+                    sendMessage(otherPlayerIndex, "상대방이 입력중입니다.");
 
                     String input = readerList.get(currentPlayerIndex).readLine();
 
@@ -161,10 +163,12 @@ public class Server {
                 printBoard();
                 String winner = getWinner() == "O" ? players.keySet().toArray()[0].toString() :
                         players.keySet().toArray()[1].toString();
-                sendMessage(0, "Game Over!" + winner + " win!");
-                sendMessage(1, "Game Over!" + winner + " win!");
-                closeConnection();
+                sendMessage(0, "Game Over! " + winner + " win!");
+                sendMessage(1, "Game Over! " + winner + " win!");
+
             } catch (IOException ignore) {
+            } finally {
+                closeConnection();
             }
         }
 

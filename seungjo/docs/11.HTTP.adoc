@@ -1,0 +1,8 @@
+= HTTP (HyperText Transfer Protocol)
+
+=== Hypertext
+* Hyperlink를 통해 한 문서에서 다른 문서로 즉시 접근할 수 있는 텍스트
+
+== WWW(World Wide Web)
+* Web Browser가 Web Server의 HTML로 기술된 리소스를 URL을 통해 요청하여 HTTP를 사용하여 받아서 표현하는 것
+

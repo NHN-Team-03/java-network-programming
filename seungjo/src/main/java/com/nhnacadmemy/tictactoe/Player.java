@@ -1,4 +1,4 @@
-package tictactoe;
+package com.nhnacadmemy.tictactoe;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

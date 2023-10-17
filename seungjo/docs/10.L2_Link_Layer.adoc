@@ -1,0 +1,6 @@
+= L2 Data Link Layer
+
+* Physical Addressing
+* NIC(Network Interface Card)
+* 다음 한 홉만 해결
+

@@ -1,4 +1,4 @@
-package quiz;
+package com.nhnacadmemy.quiz;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
