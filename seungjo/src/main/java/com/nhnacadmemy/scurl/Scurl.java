@@ -81,10 +81,10 @@ public class Scurl {
                 sb.append(line).append("\n");
             }
 
-            System.out.println(sb.toString());
+            System.out.println(sb);
             br.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
