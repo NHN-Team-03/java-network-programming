@@ -87,6 +87,10 @@ public class Handler implements HttpHandler {
         headers.add("Content-Type", "text/html;charset=UTF-8");
         headers.add("Content-Length", String.valueOf(contentLength));
 
+        if (status == HttpURLConnection.HTTP_NO_CONTENT) {
+            contentLength = -1;
+        }
+
         exchange.sendResponseHeaders(status, contentLength);
 
         responseBody.write(content);
@@ -101,12 +105,11 @@ public class Handler implements HttpHandler {
 
         sb.append("   <body>");
 
-        if(fileSet.contains(fileName)) {
+        if (fileSet.contains(fileName)) {
             File file = new File(ROOT_PATH + "/" + fileName);
 
             if (file.delete()) {
-                sb.append("       <h2>HTTP NO CONTENT </h2>");
-                sb.append("       <p> " + fileName + "삭제 완료 </p>");
+                setStatus(HttpURLConnection.HTTP_NO_CONTENT);
             } else {
                 setStatus(HttpURLConnection.HTTP_FORBIDDEN);
                 sb.append("       <h2>HTTP FORBIDDEN </h2>");
@@ -115,8 +118,6 @@ public class Handler implements HttpHandler {
 
         } else {
             setStatus(HttpURLConnection.HTTP_NO_CONTENT);
-            sb.append("       <h2>HTTP NO CONTENT </h2>");
-            sb.append("       <p> 디렉토리에 해당 파일이 존재하지 않습니다. </p>");
         }
 
         sb.append("   </body>");
@@ -127,9 +128,15 @@ public class Handler implements HttpHandler {
 
         boolean postType = false;
 
+        String boundary = "";
+
         for (String type : types) {
             if (type.contains("form-data")) {
                 postType = true;
+            }
+
+            if (type.contains("boundary")) {
+                boundary = type.split("boundary=")[1];
             }
         }
 
@@ -149,24 +156,24 @@ public class Handler implements HttpHandler {
                     sb.append("       <p> 디렉토리에 같은 이름의 파일이 존재합니다. </p>");
                 } else {
                     String line;
-                    int count = 0;
+                    boolean inpart = false;
                     FileWriter writer = new FileWriter(ROOT_PATH + "/" + filename);
 
                     while ((line = br.readLine()) != null) {
                         if (line.isEmpty()) {
-                            if (count == 0) {
-                                count++;
+                            if (!inpart) {
+                                inpart = !inpart;
                                 continue;
-                            } else {
-                                break;
                             }
+                        } else if (line.contains(boundary)) {
+                            break;
                         }
 
-                        if (count < 1) {
-                            continue;
+                        if (inpart) {
+                            writer.append(line);
+                            writer.append("\n");
                         }
-                        writer.append(line);
-                        writer.append("\n");
+
                     }
                     writer.flush();
 
