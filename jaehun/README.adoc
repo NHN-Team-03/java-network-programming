@@ -978,3 +978,55 @@ Session::
 * 사용자 접속 시점에 임의의 세션 ID를 발급한다.
 * 해당 세션 ID를 키로 하여 서버 저장소에 필요한 정보를 저장한다.
 
+== HTTP 실습
+[source, console]
+----
+sudo nano /etc/hosts
+
+127.0.0.1   test-vm.com
+
+python3 -m http.server 3000 // 웹 서버 실행
+
+nc test-vm.com 3000
+GET /welcome.html HTTP/1.1
+Host: test-vm.com:3000
+
+* 주의사항 root 디렉토리에 welcome.html 파일이 존재해야함!
+----
+
+클라이언트에서 GET 요청시 서버에서 아래와 같은 응답을 기대할 수 있다.
+[source, html]
+----
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/2.7.13
+Date: Sat, 15 Jan 2022 19:09:33 GMT
+Content-type: text/html
+Content-Length: 358
+Last-Modified: Sat, 15 Jan 2022 18:23:48 GMT
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome, NHN Academy</title>
+    </head>
+    <body>
+        <h3> Welcome </h3>
+        <p> Hello, NHN Academy. </p>
+        <p>
+            <a href="http://nhnacademy.com">
+                <img src="logo.png" />
+            </a>
+        </p>
+    </body>
+</html>
+
+----
+
+웹 브라우저에서 실행시
+[sourcel, console]
+----
+http://test-vm.com:3000/welcome.html
+----
+
+image:images/browser_response.png[]
+
