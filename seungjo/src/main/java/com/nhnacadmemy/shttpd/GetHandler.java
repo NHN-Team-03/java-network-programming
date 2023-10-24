@@ -24,7 +24,7 @@ public class GetHandler implements HttpHandler {
         String fileName = exchange.getRequestURI().getPath();
 
         // TODO: /file-path인 경우
-        if (!(fileName == null || fileName.equals("/") || fileName.equals("/favicon.ico"))) {
+        if (!(fileName == null || fileName.equals("/") || fileName.equals("/favicon.ico") || fileName.contains(".."))) {
             fileName = fileName.substring(1);
             File file = findFile(fileName);
             if (file == null || !file.exists()) {
@@ -32,15 +32,18 @@ public class GetHandler implements HttpHandler {
                 Response.send(exchange, HttpURLConnection.HTTP_NOT_FOUND, fileNotFound());
 
             } else if (!file.canRead()) {
-                file.canRead();
                 // TODO: 파일이 존재하지만 읽을 수 없는 경우 -> 403 HTTP_Forbidden
                 Response.send(exchange, HttpURLConnection.HTTP_FORBIDDEN, fileCantRead());
             } else {
                 // TODO: 파일이 존재하는 경우 -> 200 HTTP_OK
                 Response.send(exchange, HttpURLConnection.HTTP_OK, fileFound(file));
             }
-        } else {
+        } else if (fileName.contains("..")) {
+            // TODO: 상위 폴더로 이동하는 경로를 지정한 경우 -> 403 HTTP_Forbidden
+            Response.send(exchange, HttpURLConnection.HTTP_FORBIDDEN, fileCantRead());
+        }
 
+        else {
             // TODO: 경로를 지정하지 않은 경우 파일 리스트를 출력 -> 200 HTTP_OK
             Response.send(exchange, HttpURLConnection.HTTP_OK, getFileList());
         }
@@ -147,8 +150,4 @@ public class GetHandler implements HttpHandler {
 
         return sb;
     }
-
-
-
-
 }

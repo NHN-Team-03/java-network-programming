@@ -15,13 +15,14 @@ public class DeleteHandler implements HttpHandler {
 
         List<String> fileList = FileList.getFileLists();
 
-        // TODO : 파일을 지울 수 있으면 지우고 204 No Content를 보낸다.
         if (fileList.contains(fileName)) {
 
             boolean delete = FileList.findFile(fileName).delete();
             if (delete) {
+                // TODO : 파일을 지울 수 있으면 지우고 204 No Content를 보낸다.
                 Response.send(exchange, HttpURLConnection.HTTP_NO_CONTENT, noContent());
             } else {
+                // TODO : 지정된 파일을 지울 수 없다면 403 Forbidden을 보낸다.
                 Response.send(exchange, HttpURLConnection.HTTP_FORBIDDEN, forbidden());
             }
         }
@@ -31,7 +32,6 @@ public class DeleteHandler implements HttpHandler {
             Response.send(exchange, HttpURLConnection.HTTP_NO_CONTENT, noContent());
         }
 
-        // TODO : 지정된 파일을 지울 수 없다면 403 Forbidden을 보낸다.
 
 
     }
