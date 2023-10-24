@@ -8,11 +8,6 @@ public class HtmlMaker {
 
     public HtmlMaker() {
         this.sb = new StringBuilder();
-
-        writeHeader();
-    }
-
-    public void writeHeader() {
         sb.append("<!DOCTYPE html>");
         sb.append("<html>");
         sb.append("   <head>");
@@ -20,7 +15,7 @@ public class HtmlMaker {
         sb.append("       <meta name=\"author\" content=\"Jaehun\">");
         sb.append("       <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
         sb.append("       <title>Simple HTTP Directory</title>");
-        sb.append("   </head>");
+        sb.append("   </head>");;
     }
 
     public void writeBody(String message) {
@@ -32,12 +27,6 @@ public class HtmlMaker {
 
     public StringBuilder getHtml() {
         return sb;
-    }
-
-    public void clear() {
-        sb.delete(0, sb.length()-1);
-
-        writeHeader();
     }
 
 }

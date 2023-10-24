@@ -29,15 +29,12 @@ public class Handler implements HttpHandler {
         switch (method) {
             case "GET":
                 bodyMessage = new Get(exchange).handler();
-                maker.clear();
                 break;
             case "POST":
                 bodyMessage = new Post(exchange).handler();
-                maker.clear();
                 break;
             case "DELETE":
                 bodyMessage = new Delete(exchange).handler();
-                maker.clear();
                 break;
             default:
                 status = HttpURLConnection.HTTP_BAD_METHOD;
