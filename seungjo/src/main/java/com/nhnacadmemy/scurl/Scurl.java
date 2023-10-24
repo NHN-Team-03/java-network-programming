@@ -105,17 +105,15 @@ public class Scurl {
 
     public static void main(String[] args) {
 
-
         Options options = new Options();
         addOptions(options);
 
         try {
             URL url = new URL(args[args.length - 1]);
 
+            // URL만 지정해줬을 경우 default method는 GET
             if (args.length == 1) {
-                args = Arrays.copyOf(args, args.length + 1);
-                args[0] = "-X";
-                args[1] = "GET";
+                args = defaultMethod(args);
             }
 
             String header = "";
@@ -123,10 +121,11 @@ public class Scurl {
             CommandLineParser parser = new DefaultParser();
             CommandLine cmd = parser.parse(options, args);
 
+            //
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
             if (cmd.hasOption("d")) {
                 body = cmd.getOptionValue("d");
+
             }
 
             if (cmd.hasOption("H")) {
@@ -155,6 +154,7 @@ public class Scurl {
 
                     case "PUT":
                         connection.setRequestMethod("PUT");
+                        putMethod(connection, body);
                         break;
 
                     case "DELETE":
@@ -177,16 +177,10 @@ public class Scurl {
             }
 
             if (cmd.hasOption("v")) {
-
-                if (connection.getRequestMethod().isEmpty()) {
-                    connection.setRequestMethod("GET");
-                }
-
-                connection.connect();
-
                 if (!header.isEmpty()) {
                     verbose(connection, header);
                 } else {
+
                     verbose(connection);
                 }
             }
@@ -207,6 +201,14 @@ public class Scurl {
             printHelp(options);
         }
 
+    }
+
+
+    private static String[] defaultMethod(String[] args) {
+        args = Arrays.copyOf(args, args.length + 1);
+        args[0] = "-X";
+        args[1] = "GET";
+        return args;
     }
 
     private static void fileMethod(HttpURLConnection connection, String file) {
@@ -298,6 +300,20 @@ public class Scurl {
             connection.setDoOutput(true);
 
             System.out.println("body = " + body);
+            OutputStream outputStream = connection.getOutputStream();
+            outputStream.write(body.getBytes());
+            outputStream.flush();
+
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void putMethod(HttpURLConnection connection, String body) {
+        try {
+            connection.setDoOutput(true);
+
             OutputStream outputStream = connection.getOutputStream();
             outputStream.write(body.getBytes());
             outputStream.flush();
