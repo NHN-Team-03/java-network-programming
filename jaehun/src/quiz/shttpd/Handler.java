@@ -11,41 +11,48 @@ import java.nio.charset.StandardCharsets;
 
 public class Handler implements HttpHandler {
 
-    public static int status = HttpURLConnection.HTTP_OK;
+    public int status;
+    private HtmlMaker maker;
+    private StringBuilder stringBuilder;
+
 
     public Handler() {
-        FileList.addFile();
+         status = HttpURLConnection.HTTP_OK;
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        HtmlMaker maker = new HtmlMaker();
+        maker = new HtmlMaker();
         FileList.addFile();
-
-        OutputStream responseBody = exchange.getResponseBody();
+        stringBuilder = new StringBuilder();
 
         String method = exchange.getRequestMethod();
-        String bodyMessage = "";
         switch (method) {
             case "GET":
-                bodyMessage = new Get(exchange).handler();
+                Get getHandler = new Get(exchange, stringBuilder);
+                status = getHandler.getStatus();
                 break;
             case "POST":
-                bodyMessage = new Post(exchange).handler();
+                Post postHandler = new Post(exchange, stringBuilder);
+                status = postHandler.getStatus();
                 break;
             case "DELETE":
-                bodyMessage = new Delete(exchange).handler();
+                Delete deleteHandler = new Delete(exchange, stringBuilder);
+                status = deleteHandler.getStatus();
                 break;
             default:
                 status = HttpURLConnection.HTTP_BAD_METHOD;
         }
 
-        maker.writeBody(bodyMessage);
+        response(exchange);
+    }
 
-        StringBuilder sb = maker.getHtml();
+    private void response(HttpExchange exchange) throws IOException{
+        OutputStream responseBody = exchange.getResponseBody();
 
+        maker.writeBody(stringBuilder.toString());
 
-        ByteBuffer bb = StandardCharsets.UTF_8.encode(sb.toString());
+        ByteBuffer bb = StandardCharsets.UTF_8.encode(stringBuilder.toString());
         int contentLength = bb.limit();
         byte[] content = new byte[contentLength];
         bb.get(content, 0, contentLength);

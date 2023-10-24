@@ -13,8 +13,6 @@ public class FileList {
 
     public static Set<String> fileSet;
 
-
-
     public static void addFile() {
         fileSet = new HashSet<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(FileList.ROOT_PATH))) {

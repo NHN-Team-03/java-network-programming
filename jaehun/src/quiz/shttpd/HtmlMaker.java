@@ -1,32 +1,29 @@
 package quiz.shttpd;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-
 public class HtmlMaker {
-    private StringBuilder sb;
+    private final StringBuilder stringBuilder;
 
     public HtmlMaker() {
-        this.sb = new StringBuilder();
-        sb.append("<!DOCTYPE html>");
-        sb.append("<html>");
-        sb.append("   <head>");
-        sb.append("       <meta charset=\"UTF-8\">");
-        sb.append("       <meta name=\"author\" content=\"Jaehun\">");
-        sb.append("       <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-        sb.append("       <title>Simple HTTP Directory</title>");
-        sb.append("   </head>");;
+        this.stringBuilder = new StringBuilder();
+        stringBuilder.append("<!DOCTYPE html>");
+        stringBuilder.append("<html>");
+        stringBuilder.append("   <head>");
+        stringBuilder.append("       <meta charset=\"UTF-8\">");
+        stringBuilder.append("       <meta name=\"author\" content=\"Jaehun\">");
+        stringBuilder.append("       <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+        stringBuilder.append("       <title>Simple HTTP Directory</title>");
+        stringBuilder.append("   </head>");;
     }
 
     public void writeBody(String message) {
-        sb.append("   <body>");
-        sb.append(message);
-        sb.append("   </body>");
-        sb.append("</html>");
+        stringBuilder.append("   <body>");
+        stringBuilder.append(message);
+        stringBuilder.append("   </body>");
+        stringBuilder.append("</html>");
     }
 
     public StringBuilder getHtml() {
-        return sb;
+        return stringBuilder;
     }
 
 }
