@@ -87,9 +87,8 @@ public class PostHandler implements HttpHandler {
 
     }
 
-    private StringBuilder create(String fileName) {
-        StringBuilder sb = new StringBuilder();
 
+    private static void htmlHeader(StringBuilder sb) {
         sb.append("<!DOCTYPE html>");
         sb.append("<html>");
         sb.append("   <head>");
@@ -97,7 +96,12 @@ public class PostHandler implements HttpHandler {
         sb.append("       <meta name=\"author\" content=\"seungjo\">");
         sb.append("       <title>Seungjo's shttpd</title>");
         sb.append("   </head>");
+    }
 
+    private StringBuilder create(String fileName) {
+        StringBuilder sb = new StringBuilder();
+
+        htmlHeader(sb);
         sb.append("   <body>");
         sb.append("       <h3>201 Created</h3>");
         sb.append("       <h3>File Name: ").append(fileName).append("</h3>");
@@ -107,16 +111,11 @@ public class PostHandler implements HttpHandler {
         return sb;
     }
 
+
     private StringBuilder conflict(String fileName) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html>");
-        sb.append("<html>");
-        sb.append("   <head>");
-        sb.append("       <meta charset=\"UTF-8\">");
-        sb.append("       <meta name=\"author\" content=\"seungjo\">");
-        sb.append("       <title>Seungjo's shttpd</title>");
-        sb.append("   </head>");
 
+        htmlHeader(sb);
         sb.append("   <body>");
         sb.append("       <h3>409 Conflict!</h3>");
         sb.append("       <h3>File Name: ").append(fileName).append("</h3>");
@@ -129,14 +128,7 @@ public class PostHandler implements HttpHandler {
     private StringBuilder methodNotAllowed() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("<!DOCTYPE html>");
-        sb.append("<html>");
-        sb.append("   <head>");
-        sb.append("       <meta charset=\"UTF-8\">");
-        sb.append("       <meta name=\"author\" content=\"seungjo\">");
-        sb.append("       <title>Seungjo's shttpd</title>");
-        sb.append("   </head>");
-
+        htmlHeader(sb);
         sb.append("   <body>");
         sb.append("       <h3>405 Method Not Allowed</h3>");
         sb.append("   </body>");

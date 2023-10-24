@@ -41,12 +41,20 @@ public class GetHandler implements HttpHandler {
         } else if (fileName.contains("..")) {
             // TODO: 상위 폴더로 이동하는 경로를 지정한 경우 -> 403 HTTP_Forbidden
             Response.send(exchange, HttpURLConnection.HTTP_FORBIDDEN, fileCantRead());
-        }
-
-        else {
+        } else {
             // TODO: 경로를 지정하지 않은 경우 파일 리스트를 출력 -> 200 HTTP_OK
             Response.send(exchange, HttpURLConnection.HTTP_OK, getFileList());
         }
+    }
+
+    private static void htmlHeader(StringBuilder sb) {
+        sb.append("<!DOCTYPE html>");
+        sb.append("<html>");
+        sb.append("   <head>");
+        sb.append("       <meta charset=\"UTF-8\">");
+        sb.append("       <meta name=\"author\" content=\"seungjo\">");
+        sb.append("       <title>Seungjo's shttpd</title>");
+        sb.append("   </head>");
     }
 
 
@@ -62,31 +70,20 @@ public class GetHandler implements HttpHandler {
 
     private static StringBuilder getFileList() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html>");
-        sb.append("<html>");
-        sb.append("   <head>");
-        sb.append("       <meta charset=\"UTF-8\">");
-        sb.append("       <meta name=\"author\" content=\"seungjo\">");
-        sb.append("       <title>Seungjo's shttpd</title>");
-        sb.append("   </head>");
+        htmlHeader(sb);
 
         sb.append("   <body>");
-        sb.append("       <h3>File List </h3>");
+        sb.append("       <h3>File List</h3>");
         writeFileList(sb);
         sb.append("   </body>");
         sb.append("</html>");
         return sb;
     }
 
+
     private StringBuilder fileFound(File file) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html>");
-        sb.append("<html>");
-        sb.append("   <head>");
-        sb.append("       <meta charset=\"UTF-8\">");
-        sb.append("       <meta name=\"author\" content=\"seungjo\">");
-        sb.append("       <title>Seungjo's shttpd</title>");
-        sb.append("   </head>");
+        htmlHeader(sb);
 
         sb.append("   <body>");
         sb.append("       <h3> 파일의 내용 </h3>");
@@ -119,13 +116,7 @@ public class GetHandler implements HttpHandler {
 
     private StringBuilder fileNotFound() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html>");
-        sb.append("<html>");
-        sb.append("   <head>");
-        sb.append("       <meta charset=\"UTF-8\">");
-        sb.append("       <meta name=\"author\" content=\"seungjo\">");
-        sb.append("       <title>Seungjo's shttpd</title>");
-        sb.append("   </head>");
+        htmlHeader(sb);
         sb.append("   <body>");
         sb.append("       <h3> 해당 파일을 찾을 수 없습니다! </h3>");
         sb.append("   </body>");
@@ -136,13 +127,7 @@ public class GetHandler implements HttpHandler {
 
     private StringBuilder fileCantRead() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html>");
-        sb.append("<html>");
-        sb.append("   <head>");
-        sb.append("       <meta charset=\"UTF-8\">");
-        sb.append("       <meta name=\"author\" content=\"seungjo\">");
-        sb.append("       <title>Seungjo's shttpd</title>");
-        sb.append("   </head>");
+        htmlHeader(sb);
         sb.append("   <body>");
         sb.append("       <h3> 해당 파일을 읽을 수 없습니다! </h3>");
         sb.append("   </body>");

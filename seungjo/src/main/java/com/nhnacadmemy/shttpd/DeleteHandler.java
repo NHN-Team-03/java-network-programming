@@ -31,13 +31,9 @@ public class DeleteHandler implements HttpHandler {
         if (!fileList.contains(fileName)) {
             Response.send(exchange, HttpURLConnection.HTTP_NO_CONTENT, noContent());
         }
-
-
-
     }
 
-    private StringBuilder forbidden() {
-        StringBuilder sb = new StringBuilder();
+    private static void htmlHeader(StringBuilder sb) {
         sb.append("<!DOCTYPE html>");
         sb.append("<html>");
         sb.append("   <head>");
@@ -45,6 +41,11 @@ public class DeleteHandler implements HttpHandler {
         sb.append("       <meta name=\"author\" content=\"seungjo\">");
         sb.append("       <title>Seungjo's shttpd</title>");
         sb.append("   </head>");
+    }
+
+    private StringBuilder forbidden() {
+        StringBuilder sb = new StringBuilder();
+        htmlHeader(sb);
         sb.append("   <body>");
         sb.append("       <h3> 해당 파일을 지울 수 없습니다!!! </h3>");
         sb.append("   </body>");
@@ -53,21 +54,15 @@ public class DeleteHandler implements HttpHandler {
         return sb;
     }
 
+
     private StringBuilder noContent() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html>");
-        sb.append("<html>");
-        sb.append("    <head>");
-        sb.append("       <meta charset=\"UTF-8\">");
-        sb.append("       <meta name=\"author\" content=\"seungjo\">");
-        sb.append("       <title>Seungjo's shttpd</title>");
-        sb.append("   </head>");
+        htmlHeader(sb);
         sb.append("    <body>");
         sb.append("        <h3>204 No Content!</h1>");
         sb.append("    </body>");
         sb.append("</html>");
 
         return sb;
-
     }
 }
