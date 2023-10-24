@@ -140,10 +140,14 @@ public class Handler implements HttpHandler {
         if ("DELETE".equals(exchange.getRequestMethod())) {
             filePath = args;
             getFile = new File(root + filePath);
-
-            getFile.delete();
-
             responseCode = 204;
+
+            if(getFile.exists()){
+                if(!getFile.delete()){
+                    responseCode = 403;
+                }
+            }
+
 
             exchange.sendResponseHeaders(responseCode, -1);
         }

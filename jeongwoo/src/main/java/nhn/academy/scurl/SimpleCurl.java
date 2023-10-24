@@ -7,8 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
@@ -28,7 +26,7 @@ public class SimpleCurl {
     static String method = "GET";
     static String userAgent = "curl/8.1.2";
     static String accept = "*/*";
-    static Options options = addoption();
+    static Options options = addOption();
     static CommandLineParser parser = new DefaultParser();
     static CommandLine cmd;
     static int requestCount = 0;
@@ -63,7 +61,7 @@ public class SimpleCurl {
 
             if (cmd.hasOption("H")) {
                 String requestHeader = cmd.getOptionValue("H");
-                requestHeader.replaceAll("\"", "");
+                System.out.println(requestHeader);
                 String[] requestHeaderList = requestHeader.split(" ");
                 int length = requestHeaderList[0].length();
                 requestHeaderList[0] = requestHeaderList[0].substring(0, length - 1);
@@ -78,7 +76,7 @@ public class SimpleCurl {
 
             //~$ scurl -F "upload=@file_path" http://httpbin.org/post
             if (cmd.hasOption("F")) {
-                String boundary = "------------------------8f848e9206984df0";
+                String boundary = "------------------------" + System.currentTimeMillis();
                 http.setRequestMethod("POST");
                 http.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
                 http.setDoOutput(true);
@@ -92,7 +90,8 @@ public class SimpleCurl {
 
                 DataOutputStream outputStream = new DataOutputStream(http.getOutputStream());
                 outputStream.writeBytes("--" + boundary + "\r\n");
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"upload\"; filename=\"" + filePath + "\"\r\n");
+                outputStream.writeBytes(
+                        "Content-Disposition: form-data; name=\"upload\"; filename=\"" + filePath + "\"\r\n");
                 outputStream.writeBytes("Content-Type: application/octet-stream\r\n\r\n");
 
                 // 파일 내용을 전송
@@ -205,7 +204,7 @@ public class SimpleCurl {
     }
 
 
-    static Options addoption() {
+    static Options addOption() {
         Options options = new Options();
 
         Option verbose = new Option("v", "verbose, 요청, 응답 헤더를 출력합니다.");
