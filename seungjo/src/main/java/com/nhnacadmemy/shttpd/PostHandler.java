@@ -76,6 +76,9 @@ public class PostHandler implements HttpHandler {
                 fw.flush();
                 fw.close();
 
+                requestBody.close();
+                br.close();
+
                 Response.send(exchange, HttpURLConnection.HTTP_CREATED, create(fileName));
             }
 
